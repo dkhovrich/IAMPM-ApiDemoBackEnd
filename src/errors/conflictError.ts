@@ -1,4 +1,4 @@
-import BaseError from './BaseError';
+import BaseError from './baseError';
 
 class ConflictError extends BaseError {
     constructor(message?: string) {
