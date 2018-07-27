@@ -11,7 +11,7 @@ const router: Router = express.Router();
 router.post('/login', jsonSchemaMiddleware(loginModelJsonSchema), async (req: Request, res: Response) => {
     try {
         const user: IUserDto = await UserService.login(req.body.email);
-        const token: string = jwt.sign(JSON.stringify(user), process.env.JWT_KEY);
+        const token: string = jwt.sign({ id: user.id }, process.env.JWT_KEY);
         res.json({ token });
     } catch (err) {
         console.error('Login error', err);
