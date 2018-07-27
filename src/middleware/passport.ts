@@ -8,8 +8,7 @@ passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_KEY
 }, function (jwtPayload, next) {
-    const { id } = jwtPayload;
-    if (id && typeof id === 'string') {
+    if (jwtPayload && jwtPayload.id && typeof jwtPayload.id === 'string') {
         next(null, jwtPayload);
     } else {
         next(null, false);

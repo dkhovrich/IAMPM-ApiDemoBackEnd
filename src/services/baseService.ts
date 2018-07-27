@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 type Action = () => Promise<any>;
 
 abstract class BaseService {
-    protected async handleConnection(action: Action): Promise<any> {
+    protected async handleConnection<T>(action: Action): Promise<T> {
         try {
             await mongoose.connect(process.env.MONGODB_URI);
             return await action();

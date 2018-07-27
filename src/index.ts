@@ -7,7 +7,8 @@ dotenv.config();
 
 import './middleware/passport';
 
-import auth from './services/authRouter';
+import auth from './routers/authRouter';
+import heroes from './routers/heroRouter';
 import errorHandler from './middleware/errorHandler';
 
 const port: number = parseInt(process.env.PORT, null);
@@ -19,9 +20,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/auth', auth);
-// app.use('/admin/users', passport.authenticate('jwt', authOptions), users);
-// app.use('/admin/glossaries', passport.authenticate('jwt', authOptions), glossaries);
-// app.use('/chatbot/glossaries', chatbotGlossaries);
+app.use('/heroes', passport.authenticate('jwt', authOptions), heroes);
 
 app.use(errorHandler());
 app.listen(port, () => console.log(`Server is listening on port ${port}`));
