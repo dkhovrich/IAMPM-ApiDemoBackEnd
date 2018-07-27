@@ -11,7 +11,10 @@ export interface IHeroModel extends Document {
 }
 
 export const schema = new Schema({
-    email: String,
+    email: {
+        type: String,
+        index: true
+    },
     firstName: String,
     lastName: String,
     nickName: String,
