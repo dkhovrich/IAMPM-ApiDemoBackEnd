@@ -11,7 +11,8 @@
         "watch": "nodemon",
         "parser": "ts-node ./src/parser/index.ts",
         "lint": "tslint ./src/**/*.ts",
-        "tsc": "tsc"
+        "tsc": "tsc",
+        "postinstall": "npm run tsc"
     },
     "repository": {
         "type": "git",
