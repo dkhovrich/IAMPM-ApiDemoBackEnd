@@ -1,6 +1,7 @@
 import BaseService from './baseService';
 import { IHeroDto, IHeroModel, Hero, HeroDto } from '../models/heroModel';
 import NotFoundError from '../errors/notFoundError';
+import ConflictError from '../errors/conflictError';
 
 class HeroesService extends BaseService {
     async getById(id: string, userId: string): Promise<IHeroDto> {
@@ -23,6 +24,10 @@ class HeroesService extends BaseService {
 
     async create(model: IHeroDto, userId: string): Promise<IHeroDto> {
         return await this.handleConnection<IHeroDto>(async () => {
+            if (await Hero.findOne({ email: model.email, userId })) {
+                throw new ConflictError();
+            }
+
             const data = Object.assign({}, model, { userId });
             const hero: IHeroModel = await Hero.create(data);
             return HeroDto.create(hero);
@@ -31,8 +36,12 @@ class HeroesService extends BaseService {
 
     async update(model: IHeroDto, id: string, userId: string): Promise<IHeroDto> {
         return await this.handleConnection<IHeroDto>(async () => {
-            if (!await this.isHeroExists(id, userId)) {
+            if (!await this.isHeroExistsById(id, userId)) {
                 throw new NotFoundError();
+            }
+
+            if (await Hero.findOne({ email: model.email, userId, _id: { $ne: id } })) {
+                throw new ConflictError();
             }
 
             const data = Object.assign({}, model, { userId });
@@ -45,7 +54,7 @@ class HeroesService extends BaseService {
 
     async delete(id: string, userId: string): Promise<void> {
         return await this.handleConnection<void>(async () => {
-            if (!await this.isHeroExists(id, userId)) {
+            if (!await this.isHeroExistsById(id, userId)) {
                 throw new NotFoundError();
             }
 
@@ -57,7 +66,7 @@ class HeroesService extends BaseService {
         return await Hero.findOne({ _id: id, userId });
     }
 
-    private async isHeroExists(id: string, userId: string): Promise<boolean> {
+    private async isHeroExistsById(id: string, userId: string): Promise<boolean> {
         const hero: IHeroModel = await this.getHeroById(id, userId);
         return !!hero;
     }
